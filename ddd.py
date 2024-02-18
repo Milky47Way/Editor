@@ -11,10 +11,11 @@ app = QApplication([])
 win = QWidget()
 win.resize(1200,700)
 win.setWindowTitle ('Easy Editor')
-win.setStyleSheet('background-color:#ABDCFF; font-size:24px; padding: 5px; color:green')
+win.setStyleSheet('background-color:#8FBC8F; font-size:24px; padding: 5px; color: ')
 
-lb_image = QLabel('Картинка')
-btn_dir = QPushButton('Папка')
+lb_image = QLabel('Картинка'
+                  ' [оберіть файл, щоб продовжити]')
+btn_dir = QPushButton('Папка ⇲')
 lw_files = QListWidget()
 btn_left = QPushButton('Вліво')
 btn_right = QPushButton('Вправо')
@@ -22,12 +23,12 @@ btn_flip = QPushButton('Відзеркалити')
 btn_sharp = QPushButton("Різкість")
 btn_bw = QPushButton("Ч-б")
 
-btn_dir.setStyleSheet('background-color:yellow; border:2px solid white; border-radius: 10px')
-btn_left.setStyleSheet('background-color:yellow; border:2px solid white; border-radius: 10px')
-btn_right.setStyleSheet('background-color:yellow; border:2px solid white; border-radius: 10px')
-btn_flip.setStyleSheet('background-color:yellow; border:2px solid white; border-radius: 10px')
-btn_bw.setStyleSheet('background-color:yellow; border:2px solid white; border-radius: 10px')
-btn_sharp.setStyleSheet('background-color:yellow; border:2px solid white; border-radius: 10px')
+btn_dir.setStyleSheet('background-color:DarkOliveGreen; border:2px ; border-radius: 10px')
+btn_left.setStyleSheet('background-color:DarkOliveGreen; border:2px ; border-radius: 10px')
+btn_right.setStyleSheet('background-color:OliveDrab; border:2px ; border-radius: 10px')
+btn_flip.setStyleSheet('background-color:DarkOliveGreen; border:2px ; border-radius: 10px')
+btn_bw.setStyleSheet('background-color:DarkOliveGreen; border:2px ; border-radius: 10px')
+btn_sharp.setStyleSheet('background-color:OliveDrab; border:2px ; border-radius: 10px')
 
 btn_left.setCursor(Qt.PointingHandCursor)
 btn_right.setCursor(Qt.PointingHandCursor)
@@ -84,6 +85,7 @@ class ImageProcessor:
         self.dir = None
         self.filename = None
         self.save_dir = 'Modified/'
+
     def loadImage(self, dir, filename):
         self.dir = dir
         self.filename = filename
@@ -91,17 +93,19 @@ class ImageProcessor:
         self.image = Image.open(image_path)
 
     def do_bw(self):
-        self.image = self.image.convert('L')
+        self.image = self.image.convert("L")
         self.saveImage()
         image_path = os.path.join(self.dir, self.save_dir, self.filename)
         self.showImage(image_path)
+
     def do_left(self):
-        self.image = self.image.transpose(Image.Rotate_90)
+        self.image = self.image.transpose(Image.ROTATE_90)
         self.saveImage()
         image_path = os.path.join(self.dir, self.save_dir, self.filename)
         self.showImage(image_path)
+
     def do_right(self):
-        self.image  = self.image.transpose(Image.Rotate_270)
+        self.image = self.image.transpose(Image.ROTATE_270)
         self.saveImage()
         image_path = os.path.join(self.dir, self.save_dir, self.filename)
         self.showImage(image_path)
@@ -118,25 +122,25 @@ class ImageProcessor:
         image_path = os.path.join(self.dir, self.save_dir, self.filename)
         self.showImage(image_path)
 
-
-
     def saveImage(self):
         path = os.path.join(self.dir, self.save_dir)
         if not (os.path.exists(path) and os.path.isdir(path)):
             os.mkdir(path)
         image_path = os.path.join(path, self.filename)
         self.image.save(image_path)
+
     def showImage(self, path):
         lb_image.hide()
         pixmapimage = QPixmap(path)
         pixmapimage = pixmapimage.scaled(600, 650, Qt.KeepAspectRatio)
         lb_image.setPixmap(pixmapimage)
         lb_image.show()
+
 def showChosenImage():
-    if lw_files.currntRow() >= 0:
+    if lw_files.currentRow() >= 0:
         filename = lw_files.currentItem().text()
         workimage.loadImage(workdir, filename)
-        image_path = os.path.join(workimage.dir,  workimage.filename)
+        image_path = os.path.join(workimage.dir, workimage.filename)
         workimage.showImage(image_path)
 workimage = ImageProcessor()
 lw_files.currentRowChanged.connect(showChosenImage)
